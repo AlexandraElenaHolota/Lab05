@@ -1,21 +1,19 @@
-# Add whatever it is needed to interface with the DB Table corso
-
 from database.DB_connect import get_connection
-from model.corso import Corso
+from model.iscrizione import Iscrizione
 
 
-def get_corso() -> list[Corso] | None:
+def get_studente_corso(corso):
     cnx = get_connection()
     result = []
     if cnx is not None:
         cursor = cnx.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM corso")
+        query = "select * from iscrizione i where i.codins = %s "
+        cursor.execute(query,(corso,))
         for row in cursor:
-            result.append(Corso(row["codins"], row["crediti"], row["nome"], row["pd"]))
+            result.append(Iscrizione(**row))
         cursor.close()
         cnx.close()
         return result
     else:
         print("Could not connect")
         return None
-

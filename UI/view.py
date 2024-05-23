@@ -13,10 +13,15 @@ class View(ft.UserControl):
         self._controller = None
         # graphical elements
         self._title = None
-        self.txt_name = None
-        self.btn_hello = None
-        self.txt_result = None
-        self.txt_container = None
+        self._ddCorsi = None
+        self._btnCercaiscritti = None
+        self._txtMatricola = None
+        self._txtNome = None
+        self._txtCognome = None
+        self._btnCercaStudente = None
+        self._btnCercaCorsi = None
+        self._btnIscrivi = None
+
 
     def load_interface(self):
         """Function that loads the graphical elements of the view"""
@@ -25,8 +30,9 @@ class View(ft.UserControl):
         self._page.controls.append(self._title)
 
         # row 1
-        self._ddCorsi = ft.Dropdown(label = "Selezionare un corso", width=500, hint_text="Selezionare un corso",
+        self._ddCorsi = ft.Dropdown(label = "Selezionare un corso", width=500, hint_text="corso",
             options=[], on_change = self._controller.leggi_corso)
+        self._controller.populated_ddCorsi()
         self._btnCercaiscritti = ft.ElevatedButton(text = "Cerca Iscritti", on_click=self._controller.cercaIscritti)
         row1 = ft.Row([self._ddCorsi, self._btnCercaiscritti], spacing=10, alignment=ft.MainAxisAlignment.CENTER)
         self._page.controls.append(row1)
