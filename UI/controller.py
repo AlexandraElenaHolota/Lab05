@@ -56,13 +56,54 @@ class Controller:
         else:
             self._view._txtCognome.value = f"{studente.cognome}"
             self._view._txtNome.value = f"{studente.nome}"
-        self._view.update()
 
-
+        self._view.update_page()
 
     def cercaCorsi(self, e):
-        pass
+        matricola = self._view._txtMatricola.value
+        if matricola == "":
+            self._view.create_alert("Selezionare una matricola!")
+            return
+        result = self._model.get_corsi_matricola(matricola)
+        if len(result) == 0:
+            self._view.create_alert("Matricola non presente!")
+            return
+        else:
+            self._view.txt_result.controls.append(ft.Text(f"Ci sono {len(result)} corsi seguiti:"))
+            for c in result:
+                self._view.txt_result.controls.append(ft.Text(f"{c}"))
+        self._view.update_page()
+
 
     def iscrivi(self, e):
-        pass
+        matricola = self._view._txtMatricola.value
+        if matricola == "":
+            self._view.create_alert("inserire una matricola")
+            return
+        studente = self._model.get_studente(matricola)
+        if studente is None:
+            self._view.create_alert("Matricola non presente nel database")
+            return
+        codice_corso = self._view._ddCorsi.value
+        if codice_corso is None:
+            self._view.create_alert("Selezionare un corso!")
+            return
+        if self.corsoGiaSeguito(matricola, codice_corso)==True:
+            self._view.create_alert("Corso già seguito!")
+            return
+        result = self._model.iscrivi_corso(matricola, codice_corso)
+        self._view.txt_result.controls.clear()
+        if result:
+            self._view.txt_result.controls.append(ft.Text("Iscrizione avvenuta con successo"))
+        else:
+            self._view.txt_result.controls.append(ft.Text("Iscrizione fallita"))
+        self._view.update_page()
+
+    def corsoGiaSeguito(self, matricola, corso):
+        corsi_già_seguiti = self._model.get_corsi_matricola(matricola)
+        for c in corsi_già_seguiti:
+            if c.codins == corso:
+                return True
+        return False
+
 
